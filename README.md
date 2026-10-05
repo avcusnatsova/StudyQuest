@@ -1,208 +1,308 @@
-# StudyQuest
+# TerrainIQ
 
-> A gamified study productivity dashboard built with Java, Spring Boot, MySQL, and Thymeleaf to help students turn study tasks into measurable progress.
+> A geospatial landslide risk analysis system built with Python, OpenCV, Scikit-learn, and GeoPandas to estimate environmental risk using soil imagery, terrain slope, and rainfall data.
 
 ## Overview
 
-**StudyQuest** is a web-based study tracker designed to make consistent learning more engaging and measurable.
+**TerrainIQ** is a geospatial risk analysis system designed to estimate landslide risk by combining **computer vision, machine learning, and geographic data processing**.
 
-Instead of functioning as a basic to-do list, StudyQuest combines task management with a **gamification and goal-tracking system**. Users can create study tasks, assign priorities, complete tasks to earn XP, progress through levels, track monthly performance, and maintain a long-term study goal.
+The system analyzes soil images using **K-Means clustering** to identify visually distinct soil regions and estimate exposed-soil characteristics. It then combines these results with environmental factors such as **terrain slope and 72-hour rainfall** obtained from GeoJSON data.
 
-The application was developed to demonstrate practical use of **Java, Spring Boot, Spring Data JPA, MySQL, Thymeleaf, and JavaScript** in a full-stack web application.
+These factors are incorporated into a risk-scoring system that produces a normalized landslide risk score and classifies geographic regions as **Low, Medium, or High Risk**.
+
+The project demonstrates the practical integration of **Computer Vision, Unsupervised Machine Learning, and Geospatial Data Processing** into an environmental risk analysis pipeline.
 
 ## Key Features
 
-### Task Management
+### Soil Image Analysis
 
-* Create study tasks with a name and category
-* Assign LOW, MEDIUM, or HIGH priority
-* View active study tasks in a centralized dashboard
-* Mark completed tasks and automatically remove them from the active task list
-* Persist task data using MySQL
+* Process soil images using OpenCV
+* Apply K-Means clustering for image segmentation
+* Identify visually distinct soil regions
+* Estimate exposed-soil fraction
+* Analyze soil characteristics for risk estimation
 
-### Gamification System
+### Environmental Risk Analysis
 
-Tasks award XP based on priority:
+TerrainIQ combines multiple environmental factors:
 
-| Priority |    XP |
-| -------- | ----: |
-| LOW      | 10 XP |
-| MEDIUM   | 20 XP |
-| HIGH     | 30 XP |
+* Soil characteristics
+* Exposed soil fraction
+* Terrain slope
+* 72-hour accumulated rainfall
 
-Accumulated XP contributes to the user's level progression.
+These factors are combined to calculate a normalized landslide risk score.
 
-### Study Goals
+### Risk Classification
 
-Users can define a long-term study goal such as:
+The calculated risk score is mapped to three categories:
 
-> Finish preparing for Infosys
+```text
+Low Risk
+Medium Risk
+High Risk
+```
 
-The dashboard tracks progress toward the selected goal using completed study tasks.
+### Geospatial Processing
 
-### Monthly Progress
+* Process geographic data using GeoPandas
+* Read environmental attributes from GeoJSON
+* Analyze geographic polygons
+* Enrich geographic features with calculated risk information
+* Generate a risk-enriched GeoJSON output
 
-StudyQuest separately tracks monthly productivity:
+### Visual Soil Segmentation
 
-* Tasks completed during the current month
-* XP earned during the current month
-* Progress toward the monthly study target
-
-Monthly statistics automatically reset when a new month begins, while lifetime XP and level progression are preserved.
-
-### Interactive Dashboard
-
-The single-page dashboard provides:
-
-* Current level
-* Total tasks
-* Completed tasks
-* Remaining tasks
-* Lifetime XP
-* Current study goal
-* Goal completion percentage
-* Monthly progress
-* Active study tasks
-* Task creation and priority management
+The system generates a segmented soil image that provides a visual representation of the regions identified through K-Means clustering.
 
 ## Tech Stack
 
-**Backend**
+**Programming Language**
 
-* Java
-* Spring Boot
-* Spring Data JPA
-* Spring MVC
+* Python
 
-**Frontend**
+**Computer Vision**
 
-* Thymeleaf
-* HTML5
-* CSS3
-* JavaScript
+* OpenCV
 
-**Database**
+**Machine Learning**
 
-* MySQL
+* Scikit-learn
+* K-Means Clustering
 
-**Build Tool**
+**Numerical Processing**
 
-* Maven
+* NumPy
 
-## Application Architecture
+**Geospatial Processing**
+
+* GeoPandas
+* GeoJSON
+
+**Visualization**
+
+* Matplotlib
+
+## System Architecture
 
 ```text
                     ┌─────────────────────┐
-                    │      Browser        │
-                    │ HTML/CSS/JavaScript │
+                    │     Soil Image      │
                     └──────────┬──────────┘
                                │
                                ▼
                     ┌─────────────────────┐
-                    │     Thymeleaf       │
-                    │      Views          │
+                    │ Image Preprocessing │
                     └──────────┬──────────┘
                                │
                                ▼
                     ┌─────────────────────┐
-                    │   Spring Boot       │
-                    │    Controller       │
+                    │  K-Means Clustering │
                     └──────────┬──────────┘
                                │
                                ▼
                     ┌─────────────────────┐
-                    │   Spring Data JPA   │
-                    │    Repositories     │
+                    │ Soil Segmentation   │
                     └──────────┬──────────┘
                                │
                                ▼
                     ┌─────────────────────┐
-                    │       MySQL         │
-                    │      Database       │
+                    │ Soil Characteristics│
+                    │ & Exposed Fraction  │
+                    └──────────┬──────────┘
+                               │
+                               │
+              ┌────────────────┴────────────────┐
+              │                                 │
+              ▼                                 ▼
+       Terrain Slope                      Rainfall Data
+              │                                 │
+              └────────────────┬────────────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Risk Calculation  │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Risk Classification │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────┼──────────┐
+                    ▼          ▼          ▼
+                   Low       Medium      High
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   GeoJSON Output    │
                     └─────────────────────┘
 ```
 
 ## Core Workflow
 
 ```text
-Create Study Task
+Input Soil Image
         ↓
-Assign Category + Priority
+Image Preprocessing
         ↓
-Task Stored in MySQL
+K-Means Clustering
         ↓
-Complete Task
+Soil Image Segmentation
         ↓
-Calculate XP
+Estimate Soil Characteristics
         ↓
-Update Level
+Calculate Exposed Soil Fraction
         ↓
-Update Monthly Progress
+Read Slope + Rainfall from GeoJSON
         ↓
-Update Study Goal Progress
+Calculate Risk Score
         ↓
-Remove Completed Task
+Classify Risk Level
+        ↓
+Generate Risk-Enriched GeoJSON
 ```
 
-## XP & Level System
+## Risk Analysis
 
-StudyQuest uses a simple progression model to encourage consistent study habits.
+TerrainIQ calculates landslide risk using multiple environmental characteristics.
+
+### Soil Fragility
+
+Soil characteristics are estimated from the segmented soil image and used as one of the factors contributing to the overall risk.
+
+### Exposed Soil Fraction
+
+The segmented image is used to estimate the proportion of exposed soil within the analyzed image.
+
+### Terrain Slope
+
+Slope is represented in degrees and contributes to the likelihood of landslide formation.
+
+### Rainfall
+
+The system considers accumulated rainfall over a **72-hour period** as an environmental risk factor.
+
+These factors are combined to generate a normalized risk score.
 
 ```text
-LOW Priority     → 10 XP
-MEDIUM Priority  → 20 XP
-HIGH Priority    → 30 XP
+Soil Characteristics
+        +
+Exposed Soil Fraction
+        +
+Terrain Slope
+        +
+72-Hour Rainfall
+        ↓
+   Risk Score
+        ↓
+Risk Classification
 ```
 
-The user's level is derived from accumulated lifetime XP.
+## Input Data
+
+TerrainIQ works with two primary inputs.
+
+### Soil Image
+
+A soil image is processed using K-Means clustering to identify visually distinct regions.
+
+Example:
 
 ```text
-Level = (Total XP / 100) + 1
+soil_sample.png
 ```
 
-For example:
+The resulting segmentation is saved as:
 
 ```text
-0–99 XP       → Level 1
-100–199 XP    → Level 2
-200–299 XP    → Level 3
-...
+segmented_output.png
 ```
 
-Lifetime XP is preserved even when monthly statistics reset.
+### GeoJSON Data
 
-## Monthly Progress
+The GeoJSON dataset contains geographic polygons and environmental attributes such as slope and rainfall.
 
-Monthly progress is tracked independently from lifetime progression.
+Example:
 
-At the beginning of a new month, StudyQuest automatically resets:
+```json
+{
+  "type": "Feature",
+  "properties": {
+    "slope": 28.5,
+    "rainfall": 180.0
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": []
+  }
+}
+```
+
+## Output
+
+### Segmented Soil Image
 
 ```text
-Monthly Tasks Completed → 0
-Monthly XP              → 0
+segmented_output.png
 ```
 
-while preserving:
+A visual representation of the soil regions identified through K-Means clustering.
+
+### Risk-Enriched GeoJSON
 
 ```text
-Total XP
-Level
-Study Goal
-Study Goal Progress
+landslide_risk.geojson
 ```
 
-This allows users to measure both **long-term growth** and **current-month consistency**.
+The geographic features are enriched with calculated risk information.
 
-## Database
+Example:
 
-The application uses **MySQL** for persistent storage.
+```json
+{
+  "risk_score": 0.641,
+  "risk_level": "Medium"
+}
+```
 
-The main entities include:
+## Example Result
 
-* `TodoItem` — stores study task information
-* `StudyProfile` — stores XP, level, monthly statistics, and study goal information
+```text
+--- Landslide Risk Prediction ---
 
-Spring Data JPA handles database interaction and entity persistence.
+Soil Type: Clay
+Slope: 30.0°
+Rainfall (72h): 200.0 mm
+Exposed Soil Fraction: 0.462
+
+Risk Score: 0.641
+Risk Level: Medium
+```
+
+## Project Structure
+
+```text
+TerrainIQ/
+│
+├── main.py
+├── requirements.txt
+├── README.md
+│
+├── soil_sample.png
+├── landslide_data.geojson
+└── segmented_output.png
+```
+
+### File Overview
+
+| File                     | Description                                                           |
+| ------------------------ | --------------------------------------------------------------------- |
+| `main.py`                | Main soil analysis, risk calculation, and GeoJSON processing pipeline |
+| `requirements.txt`       | Python dependencies                                                   |
+| `soil_sample.png`        | Sample soil image used for analysis                                   |
+| `landslide_data.geojson` | Geographic data containing environmental attributes                   |
+| `segmented_output.png`   | Generated K-Means soil segmentation result                            |
 
 ## Getting Started
 
@@ -210,116 +310,90 @@ Spring Data JPA handles database interaction and entity persistence.
 
 Make sure the following are installed:
 
-* Java JDK 22
-* MySQL
-* Maven or Maven Wrapper
+* Python 3.x
+* pip
 * Git
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
 git clone <YOUR-REPOSITORY-URL>
-cd StudyQuest
+cd TerrainIQ
 ```
 
-### 2. Configure MySQL
-
-Create a MySQL database for the application.
-
-Then update:
-
-```text
-src/main/resources/application.properties
-```
-
-with your local database configuration.
-
-Example:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/tododb
-spring.datasource.username=YOUR_USERNAME
-spring.datasource.password=YOUR_PASSWORD
-
-spring.jpa.hibernate.ddl-auto=update
-```
-
-**Do not commit real database passwords to GitHub.**
-
-### 3. Run the application
-
-On Windows:
+### 2. Install Dependencies
 
 ```bash
-mvnw.cmd spring-boot:run
+pip install -r requirements.txt
 ```
 
-Or:
+### 3. Prepare Input Data
+
+Add the required:
+
+* Soil image
+* GeoJSON dataset containing environmental attributes
+
+to the project directory.
+
+### 4. Run the Application
 
 ```bash
-mvnw.cmd clean package
-java -jar target/<generated-jar-name>.jar
+python main.py
 ```
 
-### 4. Open the application
+### 5. Review the Output
 
-Navigate to:
+After execution, review:
 
 ```text
-http://localhost:8080
+segmented_output.png
+landslide_risk.geojson
 ```
 
-## Project Structure
+for the soil segmentation and calculated geographic risk information.
 
-```text
-src/
-├── main/
-│   ├── java/
-│   │   └── com/nttdata/ta/todo/
-│   │       ├── TodoAppController.java
-│   │       ├── TodoItem.java
-│   │       ├── TodoItemRepository.java
-│   │       ├── TodoListViewModel.java
-│   │       ├── StudyProfile.java
-│   │       └── StudyProfileRepository.java
-│   │
-│   └── resources/
-│       ├── templates/
-│       │   └── index.html
-│       │
-│       └── application.properties
-│
-└── test/
-```
+## Technical Concepts
+
+TerrainIQ demonstrates practical application of:
+
+* Computer Vision
+* Unsupervised Machine Learning
+* K-Means Clustering
+* Image Segmentation
+* Soil Analysis
+* Geospatial Data Processing
+* GeoJSON Processing
+* Environmental Data Analysis
+* Risk Scoring
+* Data Visualization
+* Python Data Pipelines
 
 ## What I Learned
 
-Building StudyQuest provided practical experience with:
+Building TerrainIQ provided practical experience in combining **image processing, machine learning, and geographic data** within a single analytical pipeline.
 
-* Spring Boot application structure
-* MVC architecture
-* Spring Data JPA
-* MySQL persistence
-* Entity relationships and database operations
-* Thymeleaf server-side rendering
-* Form handling and validation
-* JavaScript-based UI interactions
-* Backend-driven gamification logic
-* State management across application sessions
-* Designing features around a real user problem
+The project helped me understand:
+
+* Image preprocessing and segmentation
+* K-Means clustering for unsupervised analysis
+* Processing environmental datasets
+* Working with GeoJSON geographic data
+* Combining multiple environmental factors into a risk score
+* Generating machine-readable geospatial outputs
+* Designing a Python-based data processing pipeline
 
 ## Future Improvements
 
 Potential future enhancements include:
 
-* User authentication and individual profiles
-* Study streak tracking
-* Daily study statistics
-* Analytics and progress charts
-* Subject-wise performance tracking
-* Cloud deployment
-* REST API integration
-* Responsive mobile-focused interface
+* CNN-based automated soil classification
+* Deep learning-based soil image analysis
+* Interactive geospatial risk heatmaps
+* Real-time rainfall and weather data integration
+* Web-based visualization dashboard
+* Satellite imagery integration
+* Historical landslide datasets for supervised model training
 
 ## Author
 
@@ -330,4 +404,4 @@ Panimalar Engineering College
 
 ### Project Focus
 
-`Java` · `Spring Boot` · `MySQL` · `Spring Data JPA` · `Thymeleaf` · `JavaScript` · `HTML/CSS`
+`Python` · `OpenCV` · `Scikit-learn` · `K-Means` · `GeoPandas` · `GeoJSON` · `NumPy` · `Matplotlib`
