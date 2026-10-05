@@ -2,11 +2,11 @@ package com.nttdata.ta.todo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequestMapping(path = "/todo")
@@ -17,28 +17,44 @@ public class TodoRestController {
 
     @GetMapping("/all")
     public @ResponseBody Iterable<TodoItem> getAll() {
-        Iterable<TodoItem> todoList = repository.findAll();
         return repository.findAll();
     }
 
     @PostMapping("/add")
-    public @ResponseBody Result addItem(@RequestParam String name, @RequestParam String category) {
+    public @ResponseBody Result addItem(
+            @RequestParam String name,
+            @RequestParam String category,
+            @RequestParam(defaultValue = "MEDIUM") String priority) {
+
         TodoItem item = new TodoItem(category, name);
+        item.setPriority(priority);
+
         TodoItem saved = repository.save(item);
+
         return new Result("Added", saved);
     }
 
     @PostMapping("/update")
-    public @ResponseBody Result updateItem(@RequestParam long id, @RequestParam String name,
-            @RequestParam String category, @RequestParam boolean isComplete) {
+    public @ResponseBody Result updateItem(
+            @RequestParam long id,
+            @RequestParam String name,
+            @RequestParam String category,
+            @RequestParam boolean isComplete,
+            @RequestParam(defaultValue = "MEDIUM") String priority) {
+
         TodoItem item = new TodoItem(category, name);
+
         item.setId(id);
         item.setComplete(isComplete);
+        item.setPriority(priority);
+
         TodoItem saved = repository.save(item);
-        return new Result("Updated", saved); 
-     }
+
+        return new Result("Updated", saved);
+    }
 
     class Result {
+
         private String status;
         private TodoItem item;
 
@@ -46,6 +62,7 @@ public class TodoRestController {
             status = "";
             item = null;
         }
+
         public Result(String status, TodoItem item) {
             this.status = status;
             this.item = item;
@@ -67,5 +84,4 @@ public class TodoRestController {
             this.status = status;
         }
     }
-
 }

@@ -1,29 +1,30 @@
 package com.nttdata.ta.todo;
 
 import java.util.ArrayList;
-
-import javax.validation.Valid;
+import java.util.List;
 
 public class TodoListViewModel {
 
-	@Valid
-	private ArrayList<TodoItem> todoList = new ArrayList<TodoItem>();
-	
-	public TodoListViewModel() {}
-	
-	public TodoListViewModel(Iterable<TodoItem> items) {
-		items.forEach(todoList:: add);
-	}
+    private List<TodoItem> todoList;
 
-	public TodoListViewModel(ArrayList<TodoItem> todoList) {
-		this.todoList = todoList;
-	}
+    public TodoListViewModel() {
+        this.todoList = new ArrayList<>();
+    }
 
-	public ArrayList<TodoItem> getTodoList() {
-		return todoList;
-	}
+    public TodoListViewModel(Iterable<TodoItem> todoList) {
 
-	public void setTodoList(ArrayList<TodoItem> todoList) {
-		this.todoList = todoList;
-	}
+        this.todoList = new ArrayList<>();
+
+        for (TodoItem item : todoList) {
+            this.todoList.add(item);
+        }
+    }
+
+    public List<TodoItem> getTodoList() {
+        return todoList;
+    }
+
+    public void setTodoList(List<TodoItem> todoList) {
+        this.todoList = todoList;
+    }
 }
